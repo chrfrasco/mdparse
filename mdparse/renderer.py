@@ -14,6 +14,9 @@ class Renderer:
     def render_HeadingToken(cls, token):
         raise NotImplementedError
 
+    def render_GenericToken(cls, token):
+        raise NotImplementedError
+
 
 class HTMLRenderer:
 
@@ -36,6 +39,9 @@ class HTMLRenderer:
     @classmethod
     def render_HeadingToken(cls, token):
         inner_html = cls.render_tokens(token.children)
-        h = f'h{token.level}'
-        return f'<{h}>{inner_html}</{h}>'
+        return '<h{level}>{inner_html}</h{level}>'.format(level=token.level, inner_html=inner_html)
 
+    @classmethod
+    def render_GenericToken(cls, token):
+        inner_html = cls.render_tokens(token.children)
+        return '<{token_type}>{inner_html}</{token_type}>'.format(token_type=token.token_type, inner_html=inner_html)
