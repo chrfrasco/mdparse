@@ -1,10 +1,17 @@
+TEXT_TOKEN = 'TEXT_TOKEN'
+HEADING_TOKEN = 'HEADING_TOKEN'
+GENERIC_TOKEN = 'GENERIC_TOKEN'
+
+
 class TextToken:
+    type = TEXT_TOKEN
 
     def __init__(self, *, value):
         self.value = value
 
 
 class HeadingToken:
+    type = HEADING_TOKEN
 
     def __init__(self, *, level, children):
         if not 1 <= level <= 6:
@@ -15,6 +22,7 @@ class HeadingToken:
 
 
 class GenericToken:
+    type = GENERIC_TOKEN
     _available_tokens = ['p', 'u', 's', 'i', 'b']
 
     def __init__(self, *, children, token_type):

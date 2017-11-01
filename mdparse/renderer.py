@@ -1,47 +1,27 @@
 from .tokens import *
 
-class Renderer:
-
-    def render_tokens(cls, tokens):
-        raise NotImplementedError
-
-    def render_token(cls, token):
-        raise NotImplementedError
-
-    def render_TextToken(cls, token):
-        raise NotImplementedError
-
-    def render_HeadingToken(cls, token):
-        raise NotImplementedError
-
-    def render_GenericToken(cls, token):
-        raise NotImplementedError
+def render_html_from_tokens(tokens):
+    return "\n".join(render_html_from_token(token) for token in tokens)
 
 
-class HTMLRenderer:
+def render_html_from_token(token):
+    if token.type == TEXT_TOKEN:
+        return render_text_token(token)
+    elif token.type == HEADING_TOKEN:
+        return render_heading_token(token)
+    else:
+        return render_generic_token(token)
 
-    @classmethod
-    def render_tokens(cls, tokens):
-        html_chunks = map(cls.render_token, tokens)
-        return '\n'.join(html_chunks)
 
-    @classmethod
-    def render_token(cls, token):
-        render_method = 'render_' + token.__class__.__name__
-        render = getattr(cls, render_method)
+def render_text_token(token):
+    return token.value
 
-        return render(token)
 
-    @classmethod
-    def render_TextToken(cls, token):
-        return token.value
+def render_heading_token(token):
+    inner_html = render_html_from_tokens(token.children)
+    return '<h{level}>{inner_html}</h{level}>'.format(level=token.level, inner_html=inner_html)
 
-    @classmethod
-    def render_HeadingToken(cls, token):
-        inner_html = cls.render_tokens(token.children)
-        return '<h{level}>{inner_html}</h{level}>'.format(level=token.level, inner_html=inner_html)
 
-    @classmethod
-    def render_GenericToken(cls, token):
-        inner_html = cls.render_tokens(token.children)
-        return '<{token_type}>{inner_html}</{token_type}>'.format(token_type=token.token_type, inner_html=inner_html)
+def render_generic_token(token):
+    inner_html = render_html_from_tokens(token.children)
+    return '<{token_type}>{inner_html}</{token_type}>'.format(token_type=token.token_type, inner_html=inner_html)
