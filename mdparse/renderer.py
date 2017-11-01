@@ -5,9 +5,9 @@ def render_html_from_tokens(tokens):
 
 
 def render_html_from_token(token):
-    if token.type == TEXT_TOKEN:
+    if token.token_type == TEXT_TOKEN:
         return render_text_token(token)
-    elif token.type == HEADING_TOKEN:
+    elif token.token_type == HEADING_TOKEN:
         return render_heading_token(token)
     else:
         return render_generic_token(token)
